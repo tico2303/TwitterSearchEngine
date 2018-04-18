@@ -2,8 +2,11 @@
 import json
 import pprint
 
-pp = pprint.PrettyPrinter(indent=4)
 
+"""
+Used for visualizing Tweet Json structure
+"""
+pp = pprint.PrettyPrinter(indent=4)
 def pprint(data):
     pp.pprint(data)
 
