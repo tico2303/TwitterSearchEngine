@@ -11,6 +11,7 @@ class Listener(StreamListener):
     def on_data(self, data):
         try:
             data_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', 'data'))
+            data_path +="/"
             with open(data_path + 'data.json', 'a') as f:
                 # data = json.dumps(data, ensure_ascii=False).encode("utf8")
                 # Check if lang = 'en'
