@@ -116,26 +116,26 @@ public class TwitterParser{
                 JSONObject extended = (JSONObject)retweet.get("extended_tweet");
                 JSONObject entities = (JSONObject) extended.get("entities");
                 JSONArray urls = (JSONArray)entities.get("urls");
-                Iterator<JSONObject> url_iter = urls.iterator();
+                Iterator<?> url_iter = urls.iterator();
                 while(url_iter.hasNext()){
-                    JSONObject obj = url_iter.next();
+                    JSONObject obj = (JSONObject)url_iter.next();
                     String expanded_url = (String) obj.get("expanded_url");
-                    System.out.println("Adding "+expanded_url+" to links list");
+                    //System.out.println("Adding "+expanded_url+" to links list");
                     linksList.add(expanded_url);
                 }//endwhile
 
                 //iterate over urls get the strings
                 if(entities.containsKey("media")){
                     JSONArray media = (JSONArray) entities.get("media");
-                        Iterator<JSONObject> media_iter = media.iterator();
+                        Iterator<?> media_iter = media.iterator();
                         while(media_iter.hasNext()){
-                            JSONObject obj = media_iter.next();
+                            JSONObject obj = (JSONObject)media_iter.next();
                             String medurl = (String)obj.get("media_url");
                             String expurl = (String)obj.get("expanded_url");
                             String url = (String)obj.get("url");
-                            System.out.println("adding "+expurl+ " to links list\n");
-                            System.out.println("adding "+medurl+ " to links list\n");
-                            System.out.println("adding "+url+ " to links list\n");
+                            //System.out.println("adding "+expurl+ " to links list\n");
+                            //System.out.println("adding "+medurl+ " to links list\n");
+                            //System.out.println("adding "+url+ " to links list\n");
                             linksList.add(expurl);
                             linksList.add(medurl);
                             linksList.add(url);
@@ -164,7 +164,7 @@ public class TwitterParser{
         if(tweet.containsKey("entities")){
             JSONObject entit = (JSONObject)tweet.get("entities");
             hash_tags = (JSONArray) entit.get("hashtags"); 
-            Iterator iter = hash_tags.iterator();
+            Iterator<?> iter = hash_tags.iterator();
             if(!hash_tags.isEmpty()){
                 while(iter.hasNext()){
                     //System.out.println(iter.next());
@@ -178,7 +178,7 @@ public class TwitterParser{
         if(tweet.containsKey("extended_tweet")){
             JSONObject entit = (JSONObject)tweet.get("entities");
             hash_tags = (JSONArray) entit.get("hashtags"); 
-            Iterator iter = hash_tags.iterator();
+            Iterator<?> iter = hash_tags.iterator();
             if(!hash_tags.isEmpty()){
                 while(iter.hasNext()){
                     //System.out.println(iter.next());
