@@ -21,6 +21,7 @@ public class TwitterParser{
     }
     //gets the Text of the tweet
     public String getText(){
+        //possibly parse the hashtags out
         return (String) tweet.get("text");
     }
     //gets the time tweet was created
@@ -194,5 +195,10 @@ public class TwitterParser{
     public Long getLikedCount(){
         return (Long)tweet.get("favorite_count");
     }
+    private ArrayList<String> parseForHashtags(){
+        ArrayList<String> hashtags = new ArrayList<String>();
+        //parse tweets for hashtags
 
+        return hashtags;
+    }
 }//endTwitterParser
