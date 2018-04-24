@@ -25,3 +25,6 @@ hs_err_pid*
 *.pyc
 #python virtualenv
 /env
+/jenv
+#no swaps
+*.swp
