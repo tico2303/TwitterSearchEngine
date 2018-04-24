@@ -40,4 +40,4 @@ def get_text(tweet):
 
 
 if __name__ == "__main__":
-    process_tweet('ai_data.json')
+    process_tweet('../data/data.json')
