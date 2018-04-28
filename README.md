@@ -1,9 +1,7 @@
 # Twitter Search Engine
 <br>
 ##  Initial Setup
-<br>
-> ###  Twitter Streaming API
-<br>
+>  ### Twitter Streaming API
 -  Get twitter __Consumer_Key__, __Consumer_Secret__ and copy & paste
 <br>
 it into __TwitterSearchEngine/scrapper/authenicate.py__ file
@@ -70,4 +68,5 @@ java Searcher -q <query string> -f <index field>
 -  lucene
 -  Command-cli
 -  simple-JSON
+
 
