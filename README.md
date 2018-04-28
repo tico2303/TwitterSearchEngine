@@ -1,7 +1,8 @@
 # Twitter Search Engine
 <br>
 ##  Initial Setup
->  ### Twitter Streaming API
+>  ###  Twitter Streaming API
+<br>
 -  Get twitter __Consumer_Key__, __Consumer_Secret__ and copy & paste
 <br>
 it into __TwitterSearchEngine/scrapper/authenicate.py__ file
