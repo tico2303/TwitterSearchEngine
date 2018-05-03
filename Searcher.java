@@ -16,6 +16,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
+import utils.*;
 
 public class Searcher{
     String indexDir = null ;
