@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.*;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
@@ -22,7 +23,10 @@ public class TwitterParser{
     //gets the Text of the tweet
     public String getText(){
         //possibly parse the hashtags out
-        return (String) tweet.get("text");
+        if(tweet.get("text") != null){
+            return (String) tweet.get("text");
+        }
+        return "";
     }
     //gets the time tweet was created
     public String getTimeStamp(){
@@ -107,7 +111,7 @@ public class TwitterParser{
     }
     //gets the links associated with the tweet
     public ArrayList<String> getLinks(){
-        ArrayList<String> linksList = new ArrayList<String>();
+        Set<String> linksList = new HashSet<String>();
         
         //check entities.urls 
         if(tweet.containsKey("retweeted_status")){
@@ -147,7 +151,7 @@ public class TwitterParser{
 
         //}//endiftweet 
         
-        return linksList; 
+        return new ArrayList<String>(linksList); 
     }
 
     public String getUserLocation(){
@@ -160,8 +164,18 @@ public class TwitterParser{
     }
     //gets list of Hashtags
     public ArrayList<String> getHashTags(){
-        ArrayList<String> hash_tags_list = new ArrayList<String>();
+        Set<String> hash_tags_list = new HashSet<String>();
         JSONArray hash_tags = null;
+
+        String[] text = getText().split(" ");
+        for(String t :text){
+            if(t.length() > 0){
+                if(t.charAt(0) == '#'){
+                    hash_tags_list.add(t.replace("#",""));
+                }
+            }
+        }
+
         if(tweet.containsKey("entities")){
             JSONObject entit = (JSONObject)tweet.get("entities");
             hash_tags = (JSONArray) entit.get("hashtags"); 
@@ -189,7 +203,8 @@ public class TwitterParser{
                 }
             }
         }//endif extended_tweet
-        return hash_tags_list;        
+        //convert Set to ArrayList
+        return new ArrayList<String>(hash_tags_list);        
     }
 
     public Long getLikedCount(){
