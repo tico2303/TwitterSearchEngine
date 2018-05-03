@@ -26,5 +26,6 @@ hs_err_pid*
 #python virtualenv
 /env
 /jenv
+/data
 #no swaps
 *.swp
