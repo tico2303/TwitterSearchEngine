@@ -147,7 +147,7 @@ public class Searcher{
                 System.out.println("oops couldn't write results ");
             }
 
-            WebPoster.sendResults(resultsArray);
+            //WebPoster.sendResults(resultsArray);
             //System.out.println("Done Posting Results");
         }
     }
