@@ -13,7 +13,7 @@ cd /path/to/TwitterSearchEngine/
 ```bash
 pip install -r requirements.txt
 ```
-## How to Run
+## How to Run Terminal Search
 - You will first need to scrap tweets, index the tweets then be able to search them.
 > ### Twitter Scrapper
 ```bash
@@ -45,6 +45,28 @@ javac Searcher.java
 ```bash
 java Searcher -q <query string> -f <index field>
 ```
+## How to Run Web Search
+-  Assuming you have alreadyScrapped and indexed tweets, as shown above.
+> ### Flask Server
+```python
+python app.py
+```
+> ### Twitter Search Engine
+
+![Search Engine Home Screen](images/homePage.jpg=250x250)
+> ### Select filter
+![Filter Selection menu](images/IndexSelection.jpg)
+> ### Search
+![Enter Query](images/EnterQuery.jpg)
+> ### Results
+![Results Page](images/ResultsPage.jpg)
+> ### Twitter Map has location of users
+- Hover over to see username and profile picture
+
+![Twitter Map](images/TwitterMap.jpg)
+> ### Search Statistics
+![Statistics](images/Statistics.jpg)
+
 
 ## Requirements
 > ### Python
@@ -56,5 +78,3 @@ java Searcher -q <query string> -f <index field>
 -  lucene
 -  Command-cli
 -  simple-JSON
-
-
