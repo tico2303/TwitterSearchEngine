@@ -100,49 +100,43 @@ def index():
 def search_results(search):
     q = search.data["search"]
     index = search.data["select"]
-    # print("query_string: ", q)
-    # print("indexField: ", index)
-    # s = Searcher()
-    # t = threading.Thread(target=s.search, args=(q,index))
-    # t.start()
-    # t.join()
-    # s.search(q,index)
-    cmd = ["java", "Searcher", "-q", q, "-f", index]
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
     markers = []
-    # res = json.loads(s.resultsToJson())
-    res = json.loads(out)
-    for i, t in enumerate(res['results']):
-        tstamp = t["timestamp"].split(" ")
-        dow = tstamp[0]
-        month = tstamp[1]
-        day = tstamp[2]
-        time = tstamp[3]
-        year = tstamp[5]
-        print(" dow ",dow)
-        print(" month ",month)
-        print(" day ", day)
-        print(" time ",time)
-        print(" year ",year)
+    try:
+        cmd = ["java", "Searcher", "-q", q, "-f", index]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        res = json.loads(out)
+    except:
+        res={'results':[]}
+    if len(res['results']) != 0:
+        for i, t in enumerate(res['results']):
+            tstamp = t["timestamp"].split(" ")
+            dow = tstamp[0]
+            month = tstamp[1]
+            day = tstamp[2]
+            time = tstamp[3]
+            year = tstamp[5]
+            print(" dow ",dow)
+            print(" month ",month)
+            print(" day ", day)
+            print(" time ",time)
+            print(" year ",year)
 
-        d = datetime.strptime(time, "%H:%M:%S")
-        print("formated time: ", d.strftime("%I:%M %p"))
-        res['results'][i]["formatedtime"] = month +" "+ day+ " "+ year + " at: "+ d.strftime("%I:%M %p")
-    mid = int(len(res)/2)
-    l1 = res['results'][:mid]
-    l2 = res['results'][mid:]
-    marks1 = []
-    marks2= []
-    """
-    t1 = threading.Thread(target=getLocations, args=(l1,marks1))
-    t2 = threading.Thread(target=getLocations, args=(l2,marks2))
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
-    """
-    markers = marks1 + marks2
+            d = datetime.strptime(time, "%H:%M:%S")
+            print("formated time: ", d.strftime("%I:%M %p"))
+            res['results'][i]["formatedtime"] = month +" "+ day+ " "+ year + " at: "+ d.strftime("%I:%M %p")
+        mid = int(len(res)/2)
+        l1 = res['results'][:mid]
+        l2 = res['results'][mid:]
+        marks1 = []
+        marks2= []
+        t1 = threading.Thread(target=getLocations, args=(l1,marks1))
+        t2 = threading.Thread(target=getLocations, args=(l2,marks2))
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
+        markers = marks1 + marks2
     if len(markers) == 0:
             info = {}
             info['icon'] = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
