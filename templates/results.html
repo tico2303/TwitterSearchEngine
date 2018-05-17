@@ -1,4 +1,89 @@
-<html>
-    <p>results here! </p>
+{% extends "Base.html" %}
+    {%block title %}
+  <h1>Twitter Search Engine Results</h1>
+  <p>powered by lucene</p>
+    {% endblock title %}
 
-<html>
+{% block content %}
+
+<head>
+            {{tweetmap.js}}
+</head>
+{% if ranked_data|length == 0 %}
+        <br>
+        <h3> <b> NO RESULTS FOUND </b></h3>
+        <br>
+    {% else %}
+    {% for res in ranked_data: %}
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+            <div class="media">
+                <span class="media-left">
+                    {% if exists(res["userimageurl"]) == true %}
+                    <img src= {{res["userimageurl"]}}> 
+                    <br>
+                {% endif %}
+                </span>
+                <div class="media-body">
+                    <h3 class="media-heading article-title">{{ res["username"]}}</h3>
+                    <!-- <h2><a class="article-title" href="#">{{ res["username"] }}</a></h2>
+                    -->
+                </div>
+            </div>
+
+            </div>
+              <small class="text-muted">{{ res["formatedtime"] }}</small>
+            <p class="article-content">{{ res["text"] }}</p>
+        </div>
+    </article>
+
+    {% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block map%}
+<div class="row">    
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <p class="text-center article-title"> <h3>Twitter Map</h3></p>
+            </div>
+                <div class="article-content">
+                        {{tweetmap.html}}
+                </div>
+
+        </div>
+    </article>
+</div>
+<br>
+<br>
+<div class="row">    
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+    <p class="text-center article-title"> <h3>Search Statistics</h3></p>
+    </div>
+        <table class="table article-content">
+            <thead>
+                <tr>
+                  <th scope="col">Rank</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in ranked_data: %}
+                <tr>
+                  <th scope="row" class="text-center">{{res["rank"]}}</th>
+                  <td>{{res["score"]}}</td>
+                  <td>{{res["username"]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+  </div>
+</article>
+</div>
+{% endblock map%}
+

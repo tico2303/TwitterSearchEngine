@@ -32,9 +32,13 @@ public class TwitterParser{
     public String getTimeStamp(){
         return (String) tweet.get("created_at");
     }
+    
+
+
     //get the 4 BoundingCooridinates of the tweet
-    public JSONArray getBoundingCoordinates(){
+    public String getBoundingCoordinates(){
         JSONArray coords = null;
+        JSONObject obj = new JSONObject();
        if(tweet.get("place") != null){
             //System.out.println("Found place.......");
             JSONObject place = (JSONObject)tweet.get("place");
@@ -49,12 +53,15 @@ public class TwitterParser{
             JSONArray cord3 = (JSONArray)coords.get(2);
             JSONArray cord4 = (JSONArray)coords.get(3);
             //[lat,long]
-            System.out.println(cord1.get(0));
             System.out.println(cord2);
             */
-            return coords;
+            System.out.println("TwitterParser::getBoundingCoordinates::coords"); 
+            // System.out.println(coords);
+            obj.put("coords",coords.get(0));
+            System.out.println(obj.toString());
+            return obj.toString();
         } 
-        return coords;
+        return null;
     }
     public String getFullCityName(){
         String cityName = null;

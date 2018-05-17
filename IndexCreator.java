@@ -1,5 +1,4 @@
-// some code/tutorials were used as references
-// Source: tutorialspot.com
+// some code/tutorials were used as references // Source: tutorialspot.com
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import utils.*;
 
 public class IndexCreator{
     private IndexWriter writer = null;
@@ -75,7 +75,7 @@ public class IndexCreator{
             }
 
         if(tweet.getTimeStamp() != null){
-            System.out.println("adding timestamp to document");
+            // System.out.println("adding timestamp to document");
             String index = "timestamp";
             Field timestamp = new StringField(index,tweet.getTimeStamp(), Field.Store.YES);
             doc.add(timestamp);        
@@ -89,8 +89,15 @@ public class IndexCreator{
             doc.add(location);        
             this.addToIndexFieldList(index);
             }
+        if(tweet.getBoundingCoordinates() != null){
+            System.out.println("adding coords to document");
+            String index = "coords";
+            Field location = new StringField(index,tweet.getBoundingCoordinates(), Field.Store.YES);
+            doc.add(location);        
+            this.addToIndexFieldList(index);
+        }
         if(tweet.getUserName() != null){
-            System.out.println("adding username to document");
+            // System.out.println("adding username to document");
             String index = "username";
             Field username = new StringField(index,tweet.getUserName(), Field.Store.YES);
             doc.add(username);        
@@ -98,7 +105,7 @@ public class IndexCreator{
             }
 
         if(tweet.getUserScreenName() != null){
-            System.out.println("adding userscreenname to document");
+            // System.out.println("adding userscreenname to document");
             String index = "userscreenname";
             Field userscreenname = new StringField(index,tweet.getUserScreenName(), Field.Store.YES);
             doc.add(userscreenname);        
@@ -106,7 +113,7 @@ public class IndexCreator{
             }
 
         if(tweet.getUserImageUrl() != null){
-            System.out.println("adding userimageurl to document");
+            // System.out.println("adding userimageurl to document");
             String index = "userimageurl";
             Field userimageurl = new StringField(index,tweet.getUserImageUrl(), Field.Store.YES);
             doc.add(userimageurl);        
@@ -114,7 +121,7 @@ public class IndexCreator{
             }
 
         if(tweet.getLikedCount() != null){
-            System.out.println("adding LikedCount to document");
+            // System.out.println("adding LikedCount to document");
             String index = "likedcount";
             Field likedcount = new LongPoint(index,tweet.getLikedCount());
             doc.add(likedcount);        
@@ -126,7 +133,7 @@ public class IndexCreator{
             Iterator<String> hash_iter = hash_tag_list.iterator();
             while(hash_iter.hasNext()){
                 String hash = hash_iter.next();
-                System.out.println("Hashtag: " + hash);
+                // System.out.println("Hashtag: " + hash);
                 String index = "hashtags";
                 Field hashtags = new StringField(index, hash, Field.Store.YES);
                 doc.add(hashtags);
@@ -139,7 +146,7 @@ public class IndexCreator{
             Iterator<String> link_iter = links_list.iterator();
             while(link_iter.hasNext()){
                 String link = link_iter.next();
-                System.out.println("Link: " +link);
+                // System.out.println("Link: " +link);
                 String index = "links";
                 doc.add(new StringField(index,link,Field.Store.YES));
                 this.addToIndexFieldList(index);
@@ -150,7 +157,7 @@ public class IndexCreator{
 
         //adding fields to document
         System.out.println("Done Indexing Tweet..");
-        System.out.println("indexFieldList: " + String.join(",", this.indexFieldList));
+        // System.out.println("indexFieldList: " + String.join(",", this.indexFieldList));
         return doc;    
     }//end getDocument
 

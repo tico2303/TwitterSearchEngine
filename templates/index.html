@@ -1,17 +1,32 @@
-<!doctype html>
-<html>
-    <head>
-        <title>Twitter Search Engine </title>
-    </head>
-    <h2>
-        Twitter Search Engine
-    </h2>
+{% extends "Base.html" %} 
 
-    <form method=post>
-        {{ form.select }}
-        <p>
-        {{ form.search }}
-        <input type=submit value=Search>
-        </p>
+{%block title%}
+<h1>Twitter Search Engine</h1>
+  <p>powered by lucene</p>
+{%endblock title%}
+
+{% block content %}
+    <form method="post">
+        <fieldset class="form-group">
+          <div class="row">
+            <div  class="col-sm-2">
+              <div class="form-group"> 
+                {{ form.select.label(class="form-control-label") }}
+                {{ form.select(class="form-control form-control-lg") }}
+              </div>
+            </div>
+        </div>
+          <div class="form-group"> 
+            {{ form.search.label(class="form-control-label") }}
+            {{ form.search(class="form-control form-control-lg") }}
+          </div>
+        </fieldset>
+    <div class="form-group"> 
+     <!-- <p> <input class="btn btn-dark" type=submit placeholder="Twitter query term"> </p>
+      -->
+      {{form.submit(class="btn btn-outline-info")}} 
+
+   </div>
     </form>
-</html>
+
+{% endblock %}

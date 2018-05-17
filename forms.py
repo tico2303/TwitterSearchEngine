@@ -1,11 +1,18 @@
-from wtforms import Form, StringField, SelectField
+from wtforms import Form, StringField, SelectField, SubmitField
 
 class TwitterSearchForm(Form):
+    """
     indexFields = [("text", "text"),
                    ("hashtags", "hashtags"),
                     ("timestamp","timestamp"),
                     ("location","location"),
                     ("username","username")
                     ]
-    select = SelectField("Search for Tweet by: ",choices=indexFields)
-    search = StringField('')
+    """
+    indexFields = [("text", "text"),
+                    ("hashtags", "hashtags"),
+                    ("username","username")
+                    ]
+    select = SelectField("Filter by: ",choices=indexFields)
+    search = StringField('Query for: ')
+    submit = SubmitField("Search")
