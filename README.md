@@ -53,7 +53,7 @@ python app.py
 ```
 > ### Twitter Search Engine
 
-![Search Engine Home Screen](images/homePage.jpg=250x250)
+![Search Engine Home Screen](images/homePage.jpg)
 > ### Select filter
 ![Filter Selection menu](images/IndexSelection.jpg)
 > ### Search
