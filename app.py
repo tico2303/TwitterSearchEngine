@@ -16,22 +16,25 @@ import threading
 from datetime import datetime
 import re
 import requests
-
-pattern = r'(\w{3,}),[\s]*([a-zA-Z]{2})(?![a-zA-Z0-9])'
-regex = re.compile(pattern)
-"""
-Used for visualizing Tweet Json structure
-"""
-pp = pprint.PrettyPrinter(indent=4)
-def pprint(data):
-    pp.pprint(data)
-
-
+import os
 
 app = Flask(__name__)
 GoogleMaps(app)
 
+location_pattern = r'(\w{3,}),[\s]*([a-zA-Z]{2})(?![a-zA-Z0-9])'
+regex = re.compile(location_pattern)
 ranked_data = []
+
+#Used for visualizing Tweet Json structure
+pp = pprint.PrettyPrinter(indent=4)
+def pprint(data):
+    pp.pprint(data)
+
+# creates Java Searcher Binary
+def createBinaries():
+    if not os.path.isfile("./TwitterSearchEngine/Searcher.class"):
+        cmd = ["javac", "Searcher.java"]
+        p = subprocess.Popen(cmd)
 
 # checks if image for user exists
 def exists(url):
@@ -41,9 +44,10 @@ def exists(url):
     except:
         return False
 
-# adding to jinja 
+# adding to exists function to jinja environment
 app.jinja_env.globals.update(exists=exists)
 
+# gets location data for use in Flask-Google-Maps Map class
 def getLocations(results,markers):
     for tweet in results:
         if tweet['coords'] != None:
@@ -56,9 +60,6 @@ def getLocations(results,markers):
         elif tweet['location'] != None:
             match = regex.match(tweet['location'])
             if match:
-                print("valid location format match!!")
-                print(match.group(0))
-                print(match.group(1))
                 try:
                     loc = geocoder.location(tweet['location'])
                     info = {}
@@ -66,26 +67,23 @@ def getLocations(results,markers):
                     info['lat'] = loc.latlng[0]
                     info['lng'] = loc.latlng[1]
                     info['infobox'] = "<img src='"+tweet["userimageurl"]+"'/><br>"+tweet["username"]
-                    print("infobox: ", info['infobox'])
                     markers.append(info)
                 except:
                     print("no coorinates for location: ", tweet['location'], " could be found")
-
+# partitions list into n elements
+def partitionList(li, num_partitions):
+    return [li[i::num_partitions] for i in xrange(num_partitions)]
 
 @app.route('/api/results',methods=['POST'])
 def results():
     if request.method == "POST":
         if request.headers["Content-Type"] == 'application/json':
             json_data = request.json
-            # print("recieved json array: ")
             # sort by rank
             ranked_data = sorted(json_data, key=lambda x:x["rank"])
-
             for i,l in enumerate(ranked_data):
                 if i == 10:
                     break
-                # print("rank: ", l["rank"],"\ntext:", l["text"],"\nlinks:", l["links"])
-                # print("\n")
             return "flask server::JSON recieved is: "+json.dumps(request.json)
     return "GOT NOTHING GOOD (aka. NO JSON)"
 
@@ -101,6 +99,7 @@ def search_results(search):
     q = search.data["search"]
     index = search.data["select"]
     markers = []
+    print("[+] Querying Searcher..")
     try:
         cmd = ["java", "Searcher", "-q", q, "-f", index]
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -108,7 +107,11 @@ def search_results(search):
         res = json.loads(out)
     except:
         res={'results':[]}
+        print("[!] NO Results: ", res)
+    print("[+] Done Querying Searcher")
     if len(res['results']) != 0:
+        # TODO: Move time parsing to backend Searcher class
+        print("[+] Parsing Time: ")
         for i, t in enumerate(res['results']):
             tstamp = t["timestamp"].split(" ")
             dow = tstamp[0]
@@ -116,27 +119,22 @@ def search_results(search):
             day = tstamp[2]
             time = tstamp[3]
             year = tstamp[5]
-            print(" dow ",dow)
-            print(" month ",month)
-            print(" day ", day)
-            print(" time ",time)
-            print(" year ",year)
-
             d = datetime.strptime(time, "%H:%M:%S")
-            print("formated time: ", d.strftime("%I:%M %p"))
             res['results'][i]["formatedtime"] = month +" "+ day+ " "+ year + " at: "+ d.strftime("%I:%M %p")
-        mid = int(len(res)/2)
-        l1 = res['results'][:mid]
-        l2 = res['results'][mid:]
-        marks1 = []
-        marks2= []
-        t1 = threading.Thread(target=getLocations, args=(l1,marks1))
-        t2 = threading.Thread(target=getLocations, args=(l2,marks2))
-        t1.start()
-        t2.start()
-        t1.join()
-        t2.join()
-        markers = marks1 + marks2
+        print("[+] Done Parsing Time")
+        print("[+] Creating Locations...")
+        # partitionList into n parts to thread getlocation n times
+        splitres =partitionList(res['results'], 8)
+        threadList = []
+        marks = []
+        for result in splitres:
+            t1 = threading.Thread(target=getLocations, args=(result,marks))
+            t1.start()
+            threadList.append(t1)
+        for thread in threadList:
+            thread.join()
+        markers += marks
+
     if len(markers) == 0:
             info = {}
             info['icon'] = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
@@ -145,18 +143,19 @@ def search_results(search):
             info['infobox'] = "Testing"
             markers.append(info)
     cur_location = geocoder.ip('me').latlng
-    print("markers: ", markers)
     tweetmap = Map(identifier="tweetmap",
                     zoom=9,
                     fit_markers_to_bounds=True,
                     lat=cur_location[0],
                     lng=cur_location[1],
                     markers=markers) 
-    print("Done processing Results... rendering 'results.html'")
+    print("[+] Done Creating Locations")
+    print("[+] Done processing Results... Rendering 'results.html'")
     return render_template( 'results.html', ranked_data=res["results"], tweetmap=tweetmap)
 
 if __name__ == "__main__":
     # set host='0.0.0.0' to host on lan using your computers ip
     #app.run(host='0.0.0.0')
+    createBinaries()
     app.run()
 
